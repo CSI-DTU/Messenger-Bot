@@ -1,6 +1,7 @@
 import sys
 import aiml
 import json
+import os
 import requests
 from flask import Flask, request
 app = Flask(__name__)
@@ -13,7 +14,7 @@ def botresponse(query):
 @app.route('/', methods=['GET'])
 def verify():
     if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
-        if not request.args.get("hub.verify_token") == 'hello':
+        if not request.args.get("hub.verify_token") == os.environ["VERIFICATION_TOKEN"]:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
@@ -54,7 +55,7 @@ def send_message(recipient_id, message_text):
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
     params = {
-        "access_token": 'XXXXXXXXXXXXXXXXXXXXXX'
+        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
     headers = {
         "Content-Type": "application/json"
