@@ -1,78 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aiml version="1.0">
 
-<category>
-<pattern>CSI</pattern>
-<template>CSI stands for Computer Society of India, a non-profit organisation which came about in the year 1965.
-</template>
-</category>
+    <category>
+        <pattern>CSI</pattern>
+        <template>
+                CSI stands for Computer Society of India, a non-profit organisation which came about in the year 1965.
+        </template>
+    </category>
 
-<category>
-<pattern>CSI DTU</pattern>
-<template>CSI-DTU is the student chapter of CSI in DTU.
-</template>
-</category>
+    <category>
+        <pattern>CSI DTU</pattern>
+        <template>
+            CSI-DTU is the student chapter of CSI in DTU.
+        </template>
+    </category>
 
-<category>
-<pattern>MORE ABOUT CSI</pattern>
-<template>
-Formed in 1965, the CSI has been instrumental in guiding the Indian IT industry down the right path since its formative years. Today, 
-the CSI has 381 student branches, and more than 50000 members including India's most famous IT industry leaders, brilliant scientists and dedicated academicians.
-</template>
-</category>
-
-
-<category>
-<pattern>WHAT SETS CSI APART</pattern>
-<template>College life is synonymous with zeal, passion, enthusiasm and excitement. And that is what sets CSI apart from the other cliched 
-technical societies. We don't conduct boring meetings, we don't organise boring events, and dull is one word you'd never associate 
-with us. Because CSI does everything with elan and exuberance. With our well-thought line up of engaging and entertaining events, 
-months are different in college. Too much happens!
-</template>
-</category>
-
-<category>
-<pattern>WHY * CSI</pattern>
-<template><srai>WHAT SETS CSI APART</srai>
-</template>
-</category>
-
-<category>
-<pattern>IDG</pattern>
-<template>"INTEREST DEVELOPMENT GROUPS(IDGs)" is a platform to enhance your skills a learn a lot more.Special classes on 
-coding,android development,web deplopment,etc. are organised by seniors.The classes are held on weekly basis.
-</template>
-</category>
+    <category>
+        <pattern>MORE ABOUT CSI</pattern>
+        <template>
+            Formed in 1965, the CSI has been instrumental in guiding the Indian IT industry down the right path since its formative years. Today, 
+            the CSI has 381 student branches, and more than 50000 members including India's most famous IT industry leaders, brilliant scientists and dedicated academicians.
+        </template>
+    </category>
 
 
-<category>
-<pattern>WHEN IS IDG</pattern>
-<template>IDGs take place every week on alternate days. You will be informed about the IDG in advance. :)
-</template>
-</category>
+    <category>
+        <pattern>WHAT SETS CSI APART</pattern>
+        <template>
+            College life is synonymous with zeal, passion, enthusiasm and excitement. And that is what sets CSI apart from the other cliched 
+            technical societies. We don't conduct boring meetings, we don't organise boring events, and dull is one word you'd never associate 
+            with us. Because CSI does everything with elan and exuberance. With our well-thought line up of engaging and entertaining events, 
+            months are different in college. Too much happens!
+        </template>
+    </category>
 
-<category>
-<pattern>MORE ABOUT IDG</pattern>
-<template>IDGs are one of the major aspects of a tech society.They are about learning from seniors and exploring your field of interest and surely you all would have taken most out of it.
-Now, its the time to showcase the acquired skills.Its your opportunity of helping out your peers and direct their enthusiasm into something productive.
-Also ,to teach is to learn twice over.
-Witness your knowledge growing up to next level, along the way, as you get exposure, experience and exercise out your brains in solving out the doubts.
-"Those who know, do. Those that understand, teach."
-― Aristotle
-</template>
-</category>
+    <category>
+        <pattern>WHY * CSI</pattern>
+        <template>
+            <srai>WHAT SETS CSI APART</srai>
+        </template>
+    </category>
 
-<category>
-<pattern>* IDG</pattern>
-<template><srai>MORE ABOUT IDG</srai>
-</template>
-</category>
+    <category>
+        <pattern>IDG</pattern>
+        <template>
+            "INTEREST DEVELOPMENT GROUPS(IDGs)" is a platform to enhance your skills a learn a lot more.Special classes on 
+            coding,android development,web deplopment,etc. are organised by seniors.The classes are held on weekly basis.
+        </template>
+    </category>
 
-<category>
-<pattern>* IDG *</pattern>
-<template><srai>MORE ABOUT IDG</srai>
-</template>
-</category>
+
+    <category>
+        <pattern>WHEN IS IDG</pattern>
+        <template>
+            IDGs take place every week on alternate days. You will be informed about the IDG in advance. :)
+        </template>
+    </category>
+
+    <category>
+        <pattern>MORE ABOUT IDG</pattern>
+        <template>
+        IDGs are one of the major aspects of a tech society.They are about learning from seniors and exploring your field of interest and surely you all would have taken most out of it.
+        Now, its the time to showcase the acquired skills.Its your opportunity of helping out your peers and direct their enthusiasm into something productive.
+        Also ,to teach is to learn twice over.
+        Witness your knowledge growing up to next level, along the way, as you get exposure, experience and exercise out your brains in solving out the doubts.
+        "Those who know, do. Those that understand, teach."
+        ― Aristotle
+        </template>
+    </category>
+
+    <category>
+        <pattern>* IDG</pattern>
+        <template>
+            <srai>MORE ABOUT IDG</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>* IDG *</pattern>
+        <template>
+            <srai>MORE ABOUT IDG</srai>
+        </template>
+    </category>
 
 
 </aiml>
