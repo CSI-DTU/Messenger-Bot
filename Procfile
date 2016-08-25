@@ -1,1 +1,1 @@
-web: gunicorn csi_bot:app
+web: gunicorn csi_bot:app --log-file=-
