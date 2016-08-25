@@ -7,9 +7,7 @@ from flask import Flask, request
 app = Flask(__name__)
 
 bot = aiml.Kernel()
-bot.bootstrap(learnFiles = "std-startup.xml", commands = "LOAD AIML B")
-bot.setBotPredicate("botmaster","CSI")
-bot.setBotPredicate("name","CSI-BOT")
+bot.bootstrap(brainFile ="bot_brain.brn")
 
 def botresponse(query):
     return bot.respond(query)
