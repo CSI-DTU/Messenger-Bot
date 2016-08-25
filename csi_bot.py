@@ -6,6 +6,10 @@ import requests
 from flask import Flask, request
 app = Flask(__name__)
 
+bot = aiml.Kernel()
+bot.bootstrap(learnFiles = "std-startup.xml", commands = "LOAD AIML B")
+bot.setBotPredicate("botmaster","CSI")
+bot.setBotPredicate("name","CSI-BOT")
 
 def botresponse(query):
     return bot.respond(query)
@@ -80,10 +84,6 @@ def log(message):  # simple wrapper for logging to stdout on heroku
 
 
 if __name__ == '__main__':
-    bot = aiml.Kernel()
-    bot.bootstrap(learnFiles = "std-startup.xml", commands = "LOAD AIML B")
-    bot.setBotPredicate("botmaster","CSI")
-    bot.setBotPredicate("name","CSI-BOT")
     app.run(debug=True)
     
     
