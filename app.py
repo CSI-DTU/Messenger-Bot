@@ -28,7 +28,7 @@ def verify():
 def webook():
     data = request.get_json()
     log(data)  
-
+    print "Hello"
     if data["object"] == "page":
 
         for entry in data["entry"]:
