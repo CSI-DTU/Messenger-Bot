@@ -26,9 +26,9 @@ def verify():
 
 @app.route('/', methods=['POST'])
 def webook():
-    data = request.get_json()
-    log(data)  
     print "Hello"
+    data = request.get_json()
+    log(data) 
     if data["object"] == "page":
 
         for entry in data["entry"]:
