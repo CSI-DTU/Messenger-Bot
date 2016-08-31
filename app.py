@@ -18,7 +18,7 @@ def botresponse(query):
 @app.route('/', methods=['GET'])
 def verify():
     if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
-        if not request.args.get("hub.verify_token") == os.environ['VERIFICATION_TOKEN']:
+        if not request.args.get("hub.verify_token") == os.environ["VERIFICATION_TOKEN"]:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
@@ -42,7 +42,10 @@ def webook():
                     message_text = messaging_event["message"]["text"]  # the message's text
                     if(message_text[0] == '@'):
                         return "ok", 200
-                    send_message(sender_id, botresponse(message_text))
+                    response = botresponse(message_text)
+                    send_message(sender_id,response[:300])
+                    if(len(response)>300):
+                        send_message(sender_id,response[300:])
             
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -61,7 +64,7 @@ def send_message(recipient_id, message_text):
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
     params = {
-        "access_token":  os.environ['PAGE_ACCESS_TOKEN']
+        "access_token":  os.environ["PAGE_ACCESS_TOKEN"]
     }
     headers = {
         "Content-Type": "application/json"
