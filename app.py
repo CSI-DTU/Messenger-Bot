@@ -1,7 +1,6 @@
 import sys
 import aiml
 import json
-import os
 import requests
 from flask import Flask, request
 app = Flask(__name__)
@@ -18,15 +17,15 @@ def botresponse(query):
 @app.route('/', methods=['GET'])
 def verify():
     if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
-        if not request.args.get("hub.verify_token") == os.environ["VERIFICATION_TOKEN"]:
+        if not request.args.get("hub.verify_token") == 'hello':
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
+
     return "Hello world", 200
 
 
 @app.route('/', methods=['POST'])
 def webook():
-    print "success!"
     data = request.get_json()
     log(data)  
 
@@ -40,11 +39,9 @@ def webook():
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
-                    response = botresponse(message_text)
-                    send_message(sender_id,response[:300])
-                    if(len(response)>300):
-                        send_message(sender_id,response[300:])
-                        
+                    if(message_text[0] == '@'):
+                        return "ok", 200
+                    send_message(sender_id, botresponse(message_text))
             
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -63,7 +60,7 @@ def send_message(recipient_id, message_text):
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
     params = {
-        "access_token":os.environ["PAGE_ACCESS_TOKEN"]
+        "access_token": 'XXXXXXXXXXXXXXXXXXXXXX'
     }
     headers = {
         "Content-Type": "application/json"

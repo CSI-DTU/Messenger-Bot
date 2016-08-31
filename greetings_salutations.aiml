@@ -56,7 +56,8 @@
 <category>
     <pattern>*</pattern>
     <template>
-    please say any thing in common
+    Hi, I am CSI-DTU bot.I didn't understand your query.I will pass it to my botmaster.Till then, we can talk about CSI,its events and idgs. :)
+    PS:If you don't want to talk to me, then you can send messages to page admins by starting messages with @
     </template>
 </category>
 <category>
