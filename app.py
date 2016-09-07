@@ -38,8 +38,13 @@ def webook():
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
-                    message_text = messaging_event["message"]["text"]  # the message's text
-                    if(message_text[0] == '@'):
+                    message_text = ''
+                    try:    
+                        message_text = messaging_event["message"]["text"]  # the message's text
+                    except:
+                        print "Message Text absent"
+
+                    if(message_text[0] == '@' or len(message_text) == 0):
                         return "ok", 200
                     send_message(sender_id, botresponse(message_text))
             
