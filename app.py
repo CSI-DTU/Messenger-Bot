@@ -1,6 +1,4 @@
-import os
 import sys
-import aiml
 import json
 import requests
 from flask import Flask, request
