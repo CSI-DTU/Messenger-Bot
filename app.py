@@ -197,7 +197,7 @@ def webook():
 
 
                     if message_text.startswith('/register'):
-                        url = "https://coderush.herokuapp.com/register/%s"%(sender_id)
+                        url = "https://thawing-waters-13565.herokuapp.com/register/%s"%(sender_id)
                         send_message(sender_id,"Register here:%s"%url)
                         return "ok",200
                         
