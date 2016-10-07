@@ -92,7 +92,7 @@ def send_image(recipient_id,image):
     log("sending image to {recipient}:".format(recipient=recipient_id))
 
     params = {
-        "access_token": "EAAJBvdh7DGUBADZCYaSVZB1yLU9YD5JU44DuyD3n0js96YTP8g9tA0MACJZBKQpw9Q4GvMj0wvA4ygfENwJCNLe4KZCWVwZCVqgMc9pLIxMAiEJoToZCneJwqMAvVpZCzP1KylGDBe2LATH6lZBuSPmsD46ZAki1lDvAS25csdsZCABgZDZD"
+        "access_token":  os.environ["PAGE_ACCESS_TOKEN"]
     }
     headers = {
         "Content-Type": "application/json"
