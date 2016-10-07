@@ -6,13 +6,6 @@ import requests
 from flask import Flask, request
 app = Flask(__name__)
 
-bot = aiml.Kernel()
-bot.bootstrap(learnFiles = "std-startup.xml", commands = "LOAD AIML B")
-bot.setBotPredicate("botmaster","CSI")
-bot.setBotPredicate("name","CSI-BOT")
-
-def botresponse(query):
-    return bot.respond(query)
                
 
 @app.route('/', methods=['GET'])
@@ -21,40 +14,39 @@ def verify():
         if not request.args.get("hub.verify_token") == os.environ["VERIFICATION_TOKEN"]:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
-
     return "Hello world", 200
 
 
+@app.route('/coderush', methods=['POST'])
+def coderush():
+    user = request.get_json()
+    
+    with open("CR_USERS.txt",'r') as f:
+        cr_users = json.load(f)
+        
+    # add user to cr_users' list  
+    cr_users[user['m_id']] = user['data']
+    log(cr_users)
+    
+    with open("CR_USERS.txt",'w') as f:
+        f.write(json.dumps(cr_users))    
+    return "ok",200
+
+    
+
 @app.route('/', methods=['POST'])
 def webook():
-    print "Hello"
     data = request.get_json()
-    log(data) 
+    log(data)
+    
     if data["object"] == "page":
 
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
-
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
-                    message_text = messaging_event["message"]["text"]  # the message's text
-                    if(message_text[0] == '@'):
-                        return "ok", 200
-                    response = botresponse(message_text)
-                    send_message(sender_id,response[:300])
-                    if(len(response)>300):
-                        send_message(sender_id,response[300:])
-            
-                if messaging_event.get("delivery"):  # delivery confirmation
-                    pass
-
-                if messaging_event.get("optin"):  # optin confirmation
-                    pass
-
-                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    pass
 
     return "ok", 200
 
@@ -81,6 +73,37 @@ def send_message(recipient_id, message_text):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
+
+
+def send_image(recipient_id,image):
+    log("sending image to {recipient}:".format(recipient=recipient_id))
+
+    params = {
+        "access_token": "EAAJBvdh7DGUBADZCYaSVZB1yLU9YD5JU44DuyD3n0js96YTP8g9tA0MACJZBKQpw9Q4GvMj0wvA4ygfENwJCNLe4KZCWVwZCVqgMc9pLIxMAiEJoToZCneJwqMAvVpZCzP1KylGDBe2LATH6lZBuSPmsD46ZAki1lDvAS25csdsZCABgZDZD"
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    data = json.dumps({
+            "recipient": {
+                "id": recipient_id
+                },
+            "message": {
+                "attachment":{
+                    "type":"image",
+                    "payload":{
+                        "url":image
+                        }
+                    }
+                }
+            })
+
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+    
 
 
 def log(message):  # simple wrapper for logging to stdout on heroku
