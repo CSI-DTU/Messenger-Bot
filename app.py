@@ -30,6 +30,11 @@ def coderush():
         f.write(json.dumps(cr_users))    
     return "ok",200
 
+@app.route('/users', methods=['GET'])
+def CR_USERS_DATA():
+    with open("CR_USERS.txt",'r') as f:
+        cr_users = json.load(f)
+    return str(cr_users)
     
 
 @app.route('/', methods=['POST'])
@@ -45,6 +50,15 @@ def webook():
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
+
+                    message_text = messaging_event["message"]["text"]
+
+
+                    if message_text.startswith('/coderush'):
+                        url = "https://coderush.herokuapp.com/register/%s"%(sender_id)
+                        send_message(sender_id,"Register here:%s"%url)
+                        return "ok",200
+                        
 
     return "ok", 200
 
