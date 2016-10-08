@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <title>CODERUSH REGISTRATION FORM</title>
+       <link rel="stylesheet" media="screen" href ="static/bootstrap.min.css">
+       <link rel="stylesheet" href="static/bootstrap-theme.min.css">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+ 
+ 
+<div class="container">
+ 
+ <div class="jumbotron">
+  <h2 class="text-center text-info mark">CODERUSH REGISTRATION FORM</h2>
+  <p class="text-center">Fill this registration form and head back to <a href="https://www.facebook.com/dtu.csi/"> CSI-DTU messenger bot</a> and type the command /coderush to participate online through messenger in prelims round!</p>
+
+</div>
+
+ {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+ 
+        {% for message in messages %}
+            {% if "Error" not in message[1]: %}
+                <div class="alert alert-info">
+                <strong>Success! </strong> {{ message[1] }}
+                </div>
+            {% endif %}
+            {% if "Error" in message[1]: %}
+                <div class="alert alert-warning">
+                {{ message[1] }}
+                </div>
+            {% endif %}
+        {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+ 
+  <form  action="" method="post" role="form">
+    {{ form.csrf }}
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="What's your name?">
+      <br>
+      <label for="year">Year:</label>
+      <div class="radio">
+      <label class="radio-inline"><input type="radio" name="year" value=1>1st</label>
+      <label class="radio-inline"><input type="radio" name="year" value=2>2nd</label>
+      <label class="radio-inline"><input type="radio" name="year" value=3>3rd</label>
+      <label class="radio-inline"><input type="radio" name="year" value=4>4th</label>
+      </div>
+      <br>
+      <label for="rollno">Roll number:</label>
+      <input type="text" class="form-control" id="rollno" name="rollno" placeholder="Your university roll number here.">
+      <br>
+      <label for="contact">Contact number:</label>
+      <input type="text" class="form-control" id="contact" name="contact" placeholder="Your contact number here.">
+      <br>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+    <button type="submit" class="btn btn-success">Register</button></div>
+    <div class="col-xs-6"><a class="btn btn-danger" href="/logout">Log Out</a> </div>
+    </div0
+  </form>
+
+
+
+ 
+  <br>
+ 
+</div>
+<br>            
+</div>
+</div>
+</body>
+</html>
