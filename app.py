@@ -58,7 +58,7 @@ def registration():
             elif form.errors.has_key('password'):
                 flash("Error: Password must be atleast 6 characters long!")
  
-    return render_template('register.html', form=form,user = me)
+    return render_template('register.html', form=form)
 
 
 @app.route("/logout")

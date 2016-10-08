@@ -15,8 +15,6 @@
   <h2 class="text-center text-info mark">CODERUSH REGISTRATION FORM</h2>
   <p class="text-center">Fill this registration form and head back to <a href="https://www.facebook.com/dtu.csi/"> CSI-DTU messenger bot</a> and type the command /coderush to participate online through messenger in prelims round!</p>
 
-  <img src="https://graph.facebook.com/{{user.data['id']}}/picture?type=large" class="img-circle center-block" alt="FB profile pic" width="100" height="100">
- </div> 
 
  {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -42,7 +40,7 @@
     {{ form.csrf }}
     <div class="form-group">
       <label for="name">Name:</label>
-      <input type="text" class="form-control" id="name" name="name" value={{user.data['name']}} placeholder="What's your name?">
+      <input type="text" class="form-control" id="name" name="name" placeholder="What's your name?">
       <br>
       <label for="year">Year:</label>
       <div class="radio">
