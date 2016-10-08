@@ -151,7 +151,7 @@ def webook():
 
                     if(message_text[0] == '@' or len(message_text) == 0):
                         return "ok", 200
-                    send_message(sender_id, botresponse(message_text))
+                    # send_message(sender_id, message_text)
             
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
