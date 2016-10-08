@@ -2,7 +2,6 @@ import os
 import sys
 from flask import Flask, render_template, url_for, session, flash, request, redirect
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, IntegerField
-from flask_oauth import OAuth
 import requests,json
 app = Flask(__name__)
 
@@ -10,7 +9,11 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
-oauth = OAuth()
+
+###################################################################
+REG_HERE = "Register here:https://csidtubot.herokuapp.com/register?id=%s"
+NOT_REG = "Sorry you have not registered yet. Type /register to generate registration link. :)"
+GEN_INFO = "Welcome to online prelims round of CODERUSH! bla bla bla"
 
 ###################################################################
 '''
@@ -40,17 +43,16 @@ def registration():
 
         
         if form.validate():
-            with open("REG_USERS.txt",'r') as f:
-                USERS = json.load(f)
+            
+            USERS = loadDB()
 
             if USERS.has_key(user_id):
                 flash("Error: You have already registered!")
             else:
                 flash("Thanks for registration %s!"%(request.form['name']))
                 USERS[user_id] = request.form
+                pushDB(USERS)
                 
-                with open("REG_USERS.txt",'w') as f:
-                    f.write(json.dumps(USERS))
         else:
             error_msg=''
             if form.errors.has_key('contact'):
@@ -69,6 +71,18 @@ def logout():
 '''
 csi-messenger-bot-handler
 '''
+
+def loadDB():
+    with open("REG_USERS.txt",'r') as f:
+        USERS = json.load(f)
+    return USERS
+
+def pushDB(USERS):
+    with open("REG_USERS.txt",'w') as f:
+        f.write(json.dumps(USERS))
+        
+
+
 @app.route('/', methods=['GET'])
 def verify():
     if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
@@ -79,16 +93,16 @@ def verify():
 
 
 @app.route('/users', methods=['GET'])
-def USERS_DATA():
-    with open("REG_USERS.txt",'r') as f:
-        USERS = json.load(f)    
-    return str(USERS)
+def USERS_DATA():   
+    return str(loadDB())
     
 
 @app.route('/', methods=['POST'])
 def webook():
     data = request.get_json()
     log(data)
+
+    USERS = loadDB()
     
     if data["object"] == "page":
 
@@ -105,8 +119,16 @@ def webook():
                         return "ok",200
 
                     if message_text.startswith('/register'):
-                        send_message(sender_id,"Register here:https://csidtubot.herokuapp.com/register?id=%s"%sender_id)
+                        send_message(sender_id,%sender_id)
                         return "ok",200
+                    
+                    elif message_text.startswith('/coderush'):
+                        if USERS.has_key(sender_id):
+                            send_message(sender_id,GEN_INFO)
+                        else:
+                            send_message(sender_id,NOT_REGISTERED)
+                        
+                        
                         
     return "ok", 200
 
