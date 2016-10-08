@@ -200,7 +200,7 @@ def webook():
 
 
                     if message_text.startswith('/register'):
-                        send_account_link(sender_id,image)
+                        send_account_link(sender_id)
                         
                         return "ok",200
                         
