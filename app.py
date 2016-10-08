@@ -56,8 +56,12 @@ def registration():
                 flash("Error: You have already registered!")
             else:
                 flash("Thanks for registration %s!"%(request.form['name']))
-                user = request.form
+                user={}
                 user["subscriber_id"] = user_id
+                user["name"] = request.form["name"]
+                user["year"] = request.form["year"]
+                user["rollno"] = request.form["rollno"]
+                user["contact"] = request.form["contact"]
                 pushDB(user)
                 
         else:
