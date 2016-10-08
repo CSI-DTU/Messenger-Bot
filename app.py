@@ -15,7 +15,6 @@ oauth = OAuth()
 ###################################################################
 '''
 registration-handler
-Its database is REG_USERS which stores fb Ids of the users who have already registered.
 '''
 
 class ReusableForm(Form):
@@ -63,17 +62,12 @@ def registration():
 
 
 @app.route("/logout")
-@facebook.authorized_handler
-def logout(resp):
-    if resp is None:
-        redirect(url_for('login'))
-    session.clear()
+def logout():
     return redirect("https://www.facebook.com/dtu.csi/")
 
 ################################################################## 
 '''
 csi-messenger-bot-handler
-Its database is CR_USERS
 '''
 @app.route('/', methods=['GET'])
 def verify():
