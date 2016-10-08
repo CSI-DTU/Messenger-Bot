@@ -195,8 +195,10 @@ def webook():
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
 
-                    message_text = messaging_event["message"]["text"]
-
+                    try:
+                        message_text = messaging_event["message"]["text"]
+                    except:
+                        return "ok",200
 
                     if message_text.startswith('/register'):
                         send_account_link(sender_id)
