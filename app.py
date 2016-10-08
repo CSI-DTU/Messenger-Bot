@@ -126,7 +126,7 @@ def webook():
                         if USERS.has_key(sender_id):
                             send_message(sender_id,GEN_INFO)
                         else:
-                            send_message(sender_id,NOT_REGISTERED)
+                            send_message(sender_id,NOT_REG)
                         
                         
                         
