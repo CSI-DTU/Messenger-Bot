@@ -111,7 +111,7 @@ def loadDB():
     return users
 
 def pushDB(user):
-    coderush_users.insert(user)
+    coderush_users.insert_one(user)
     
 
 def findUSER(user_id):
