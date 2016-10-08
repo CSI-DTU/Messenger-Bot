@@ -176,7 +176,9 @@ def coderush():
 def CR_USERS_DATA():
     with open("CR_USERS.txt",'r') as f:
         cr_users = json.load(f)
-    return str(cr_users)
+    with open("REG_USERS.txt",'r') as f:
+        r_users = json.load(f)    
+    return str(cr_users)+"\n\n\n\n"+str(r_users)
     
 
 @app.route('/', methods=['POST'])
