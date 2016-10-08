@@ -26,7 +26,7 @@ class ReusableForm(Form):
  
 @app.route("/register", methods=['GET', 'POST'])
 def registration():
-    user_id = requests.get_json()['id']
+    user_id = requests.args.get('id')
     
     form = ReusableForm(request.form)
     
