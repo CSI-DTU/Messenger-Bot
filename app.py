@@ -2,6 +2,7 @@ import os
 import sys
 from flask import Flask, render_template, url_for, session, flash, request, redirect
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, IntegerField
+from pymongo import MongoClient
 import requests,json
 app = Flask(__name__)
 
@@ -9,7 +10,10 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
-
+MONGODB_URI = os.environ.get('MONGODB_URI')
+client = MongoClient(MONGODB_URI)
+db = client.users
+coderush_users = db.coderush_users
 ###################################################################
 REG_HERE = "Register here:https://csidtubot.herokuapp.com/register?id=%s"
 NOT_REG = "Sorry you have not registered yet. Type /register to generate registration link. :)"
@@ -70,17 +74,44 @@ def logout():
 ################################################################## 
 '''
 csi-messenger-bot-handler
+[
+    {
+        "subscriber_id": ..........,
+        "contact": ............,
+        "year": ............,
+        "rollno": ...........,
+        "name": ...........,
+    },
+    {
+        "subscriber_id": ..........,
+        "contact": ............,
+        "year": ............,
+        "rollno": ...........,
+        "name": ...........,
+    },
+    {
+        "subscriber_id": ..........,
+        "contact": ............,
+        "year": ............,
+        "rollno": ...........,
+        "name": ...........,
+    }
+]
 '''
 
 def loadDB():
-    with open("REG_USERS.txt",'r') as f:
-        USERS = json.load(f)
-    return USERS
+    users = json.loads(coderush_users.find())
+    return users
 
-def pushDB(USERS):
-    with open("REG_USERS.txt",'w') as f:
-        f.write(json.dumps(USERS))
-        
+def pushDB(users):
+    for user in users:
+        coderush_users.insert_one({
+            "subscriber_id": user['subscriber_id'],
+            "contact": user['contact'],
+            "year": user['year'],
+            "rollno": user['rollno'],
+            "name": user['name']
+        })
 
 
 @app.route('/', methods=['GET'])
