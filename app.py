@@ -116,6 +116,7 @@ def registration(resp):
 
                 with open("CR_USERS.txt",'r') as f:
                     cr_users = json.load(f)
+                log(msngr_id)    
                 cr_users[user['m_id']] = user['data']
                 
                 with open("CR_USERS.txt",'w') as f:
