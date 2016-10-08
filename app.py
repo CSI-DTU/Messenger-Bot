@@ -18,80 +18,17 @@ registration-handler
 Its database is REG_USERS which stores fb Ids of the users who have already registered.
 '''
 
-FACEBOOK_APP_ID = os.environ["FB_APP_ID"]
-FACEBOOK_APP_SECRET = os.environ["FB_APP_SECRET"]
-               
-facebook = oauth.remote_app('facebook',
-    base_url='https://graph.facebook.com/',
-    request_token_url=None,
-    access_token_url='/oauth/access_token',
-    authorize_url='https://www.facebook.com/dialog/oauth',
-    consumer_key=FACEBOOK_APP_ID,
-    consumer_secret=FACEBOOK_APP_SECRET,
-    request_token_params={'scope': 'email'}
-)
-
-msngr_id=''
-
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()], default = "guest")
     year = IntegerField('Year:', [validators.NumberRange(min=1, max=4)], default = 1)
     rollno = TextField('Roll number:',validators=[validators.required()], default = 'abcd')
     contact = IntegerField('Contact number:',[validators.NumberRange(min=1000000000,max=9999999999)], default = 1234567890)
 
-
-@app.route('/login')
-def login():
-    return facebook.authorize(callback=url_for('facebook_authorized',
-        next=request.args.get('next') or request.referrer or None,
-        _external=True))
-
-
-@app.route('/login/authorized')
-@facebook.authorized_handler
-def facebook_authorized(resp):
-    global msngr_id
-    if resp is None:
-        return 'Access denied: reason=%s error=%s' % (
-            request.args['error_reason'],
-            request.args['error_description']
-        )
-    session['oauth_token'] = (resp['access_token'], '')
-    me = facebook.get('/me')
-    return redirect(url_for('registration'))
-
-
-@facebook.tokengetter
-def get_facebook_oauth_token():
-    return session.get('oauth_token')
-
-@app.errorhandler(400)
-def forbidden_400(exception):
-    return redirect(url_for('login'))
-    
-
-@app.route("/register", methods=['GET'])
-def register():
-    log(request)
-    return redirect(url_for('login'))
-    
-
  
-@app.route("/registration", methods=['GET', 'POST'])
-@facebook.authorized_handler
-def registration(resp):
-    global msngr_id
-    '''
-    if resp is None:
-        return redirect(url_for('login'))
-    '''
-    try:
-        me = facebook.get('/me')
-    except:
-        return redirect(url_for('login'))
-        
-
-        
+@app.route("/register", methods=['GET', 'POST'])
+def registration():
+    user_id = requests.get_json()['id']
+    
     form = ReusableForm(request.form)
     
     if request.method == 'POST':
@@ -107,24 +44,14 @@ def registration(resp):
             with open("REG_USERS.txt",'r') as f:
                 USERS = json.load(f)
 
-            if me.data['id'] in USERS:
+            if USERS.has_key(user_id):
                 flash("Error: You have already registered!")
             else:
                 flash("Thanks for registration %s!"%(request.form['name']))
-                user={'fbid':me.data['id'],'m_id':msngr_id,'data':request.form}
-
-                with open("CR_USERS.txt",'r') as f:
-                    cr_users = json.load(f)
-                log(msngr_id)    
-                cr_users[user['m_id']] = user['data']
+                USERS[user_id] = request.form
                 
-                with open("CR_USERS.txt",'w') as f:
-                    f.write(json.dumps(cr_users))
-                
-                USERS.append(user['fbid'])
                 with open("REG_USERS.txt",'w') as f:
                     f.write(json.dumps(USERS))
-        
         else:
             error_msg=''
             if form.errors.has_key('contact'):
@@ -157,28 +84,11 @@ def verify():
     return "Hello world", 200
 
 
-@app.route('/coderush', methods=['POST'])
-def coderush():
-    user = request.get_json()
-    
-    with open("CR_USERS.txt",'r') as f:
-        cr_users = json.load(f)
-        
-    # add user to cr_users' list  
-    cr_users[user['m_id']] = user['data']
-    log(cr_users)
-    
-    with open("CR_USERS.txt",'w') as f:
-        f.write(json.dumps(cr_users))    
-    return "ok",200
-
 @app.route('/users', methods=['GET'])
-def CR_USERS_DATA():
-    with open("CR_USERS.txt",'r') as f:
-        cr_users = json.load(f)
+def USERS_DATA():
     with open("REG_USERS.txt",'r') as f:
-        r_users = json.load(f)    
-    return str(cr_users)+"\n\n\n\n"+str(r_users)
+        USERS = json.load(f)    
+    return str(USERS)
     
 
 @app.route('/', methods=['POST'])
@@ -201,11 +111,9 @@ def webook():
                         return "ok",200
 
                     if message_text.startswith('/register'):
-                        send_account_link(sender_id)
-                        
+                        send_message(sender_id,"Register here:https://csidtubot.herokuapp.com/register?id=%s"%sender_id)
                         return "ok",200
                         
-
     return "ok", 200
 
 
@@ -233,46 +141,6 @@ def send_message(recipient_id, message_text):
         log(r.text)
 
 
-def send_account_link(recipient_id):
-    log("sending image to {recipient}:".format(recipient=recipient_id))
-
-    params = {
-        "access_token":  os.environ["PAGE_ACCESS_TOKEN"]
-        }
-    
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    data = json.dumps({
-        "recipient":{
-            "id":recipient_id
-            },
-        "message": {
-            "attachment": {
-                "type": "template",
-
-                "payload": {
-
-                    "template_type": "generic",
-                    "elements": [{
-                        "title": "Welcome to CSI-DTU",
-                        "image_url": "https://placementtalks.files.wordpress.com/2015/02/csi-logo.png",
-                        "buttons": [{
-                            "type": "account_link",
-                            "url": "https://csidtubot.herokuapp.com/register"
-                            }]
-                        }]
-                    }
-                }
-            }
-        })
-
-    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
-    
     
     
 
@@ -304,8 +172,8 @@ def send_image(recipient_id,image):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
-    
 
+    
 
 def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
