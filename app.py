@@ -112,21 +112,38 @@ def webook():
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
-
-                    try:
-                        message_text = messaging_event["message"]["text"]
+                    message_text = ''
+                    try:    
+                        message_text = messaging_event["message"]["text"]  # the message's text
                     except:
-                        return "ok",200
+                        print "Message Text absent"
 
-                    if message_text.startswith('/register'):
-                        send_message(sender_id,REG_HERE%sender_id)
-                        return "ok",200
-                    
-                    elif message_text.startswith('/coderush'):
-                        if USERS.has_key(sender_id):
-                            send_message(sender_id,GEN_INFO)
-                        else:
-                            send_message(sender_id,NOT_REGISTERED)
+                    if(message_text[0] == '@' or len(message_text) == 0):
+                        return "ok", 200
+                    send_message(sender_id, botresponse(message_text))
+            
+                if messaging_event.get("delivery"):  # delivery confirmation
+                    pass
+
+                if messaging_event.get("optin"):  # optin confirmation
+                    pass
+
+                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
+                    pass
+                try:
+                    message_text = messaging_event["message"]["text"]
+                except:
+                    return "ok",200
+
+                if message_text.startswith('/register'):
+                    send_message(sender_id,REG_HERE%sender_id)
+                    return "ok",200
+                
+                elif message_text.startswith('/coderush'):
+                    if USERS.has_key(sender_id):
+                        send_message(sender_id,GEN_INFO)
+                    else:
+                        send_message(sender_id,NOT_REGISTERED)
                         
                         
                         
@@ -198,6 +215,3 @@ def log(message):  # simple wrapper for logging to stdout on heroku
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
-    
-    
