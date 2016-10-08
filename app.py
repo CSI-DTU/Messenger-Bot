@@ -70,10 +70,9 @@ def forbidden_400(exception):
     return redirect(url_for('login'))
     
 
-@app.route("/register/<m_id>/", methods=['GET'])
-def register(m_id):
-    global msngr_id
-    msngr_id = m_id
+@app.route("/register", methods=['GET'])
+def register(request):
+    log(request)
     return redirect(url_for('login'))
     
 
