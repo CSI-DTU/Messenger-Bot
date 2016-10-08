@@ -14,4 +14,3 @@ itsdangerous==0.24
 wsgiref==0.1.2
 wtforms
 requests
-flask_oauth
