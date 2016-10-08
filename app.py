@@ -50,6 +50,8 @@ def registration():
             
             USERS = loadDB()
 
+            
+
             if findUSER(user_id):
                 flash("Error: You have already registered!")
             else:
@@ -109,7 +111,10 @@ def pushDB(user):
     
 
 def findUSER(user_id):
-    return coderush_users.find({"subscriber_id":user_id}).count()
+    try:
+        return coderush_users.find({"subscriber_id":user_id}).count()
+    except:
+        return 0
 
 
 @app.route('/', methods=['GET'])
