@@ -119,7 +119,7 @@ def webook():
                         return "ok",200
 
                     if message_text.startswith('/register'):
-                        send_message(sender_id,%sender_id)
+                        send_message(sender_id,REG_HERE%sender_id)
                         return "ok",200
                     
                     elif message_text.startswith('/coderush'):
