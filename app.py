@@ -100,7 +100,7 @@ csi-messenger-bot-handler
 '''
 
 def loadDB():
-    users = json.loads(coderush_users.find())
+    users = coderush_users.find()
     return users
 
 def pushDB(users):
