@@ -200,8 +200,8 @@ def webook():
 
 
                     if message_text.startswith('/register'):
-                        url = "https://csidtubot.herokuapp.com/register/%s"%(sender_id)
-                        send_message(sender_id,"Register here:%s"%url)
+                        send_account_link(sender_id,image)
+                        
                         return "ok",200
                         
 
@@ -231,6 +231,49 @@ def send_message(recipient_id, message_text):
         log(r.status_code)
         log(r.text)
 
+
+def send_account_link(recipient_id):
+    log("sending image to {recipient}:".format(recipient=recipient_id))
+
+    params = {
+        "access_token":  os.environ["PAGE_ACCESS_TOKEN"]
+        }
+    
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    data = json.dumps({
+        "recipient":{
+            "id":recipient_id
+            },
+        "message": {
+            "attachment": {
+                "type": "template",
+
+                "payload": {
+
+                    "template_type": "generic",
+                    "elements": [{
+                        "title": "Welcome to CSI-DTU",
+                        "image_url": "https://placementtalks.files.wordpress.com/2015/02/csi-logo.png",
+                        "buttons": [{
+                            "type": "account_link",
+                            "url": "https://csidtubot.herokuapp.com/register"
+                            }]
+                        }]
+                    }
+                }
+            }
+        })
+
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+    
+    
+    
 
 def send_image(recipient_id,image):
     log("sending image to {recipient}:".format(recipient=recipient_id))
