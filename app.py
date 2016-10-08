@@ -71,7 +71,7 @@ def forbidden_400(exception):
     
 
 @app.route("/register", methods=['GET'])
-def register(request):
+def register():
     log(request)
     return redirect(url_for('login'))
     
