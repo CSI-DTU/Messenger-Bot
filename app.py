@@ -2,7 +2,8 @@ import os
 import sys
 from flask import Flask, render_template, url_for, session, flash, request, redirect
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, IntegerField
-from pymongo import MongoClient
+# from pymongo import MongoClient
+from firebase import firebase
 import requests,json
 app = Flask(__name__)
 
@@ -11,9 +12,10 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 MONGODB_URI = os.environ.get('MONGODB_URI')
-client = MongoClient(MONGODB_URI)
-db = client.users
+client = MongoClient(MONGODB_URI, connectTimeoutMS=30000, socketTimeoutMS=None, socketKeepAlive=True)
+db = client.get_default_database()
 coderush_users = db.coderush_users
+firebase = firebase.FirebaseApplication('https://csidtubot.firebaseio.com/')
 ###################################################################
 REG_HERE = "Register here:https://csidtubot.herokuapp.com/register?id=%s"
 NOT_REG = "Sorry you have not registered yet. Type /register to generate registration link. :)"
