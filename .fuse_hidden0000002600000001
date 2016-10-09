@@ -2,7 +2,8 @@ import os
 import sys
 from flask import Flask, render_template, url_for, session, flash, request, redirect
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, IntegerField
-from pymongo import MongoClient
+# from pymongo import MongoClient
+from firebase import firebase
 import requests,json
 app = Flask(__name__)
 
@@ -14,6 +15,7 @@ MONGODB_URI = os.environ.get('MONGODB_URI')
 client = MongoClient(MONGODB_URI, connectTimeoutMS=30000, socketTimeoutMS=None, socketKeepAlive=True)
 db = client.get_default_database()
 coderush_users = db.coderush_users
+firebase = firebase.FirebaseApplication('https://csidtubot.firebaseio.com/')
 ###################################################################
 REG_HERE = "Register here:https://csidtubot.herokuapp.com/register?id=%s"
 NOT_REG = "Sorry you have not registered yet. Type /register to generate registration link. :)"
@@ -50,19 +52,12 @@ def registration():
             
             USERS = loadDB()
 
-            
-
-            if findUSER(user_id):
+            if USERS.has_key(user_id):
                 flash("Error: You have already registered!")
             else:
                 flash("Thanks for registration %s!"%(request.form['name']))
-                user={}
-                user["subscriber_id"] = user_id
-                user["name"] = request.form["name"]
-                user["year"] = request.form["year"]
-                user["rollno"] = request.form["rollno"]
-                user["contact"] = request.form["contact"]
-                pushDB(user)
+                USERS[user_id] = request.form
+                pushDB(USERS)
                 
         else:
             error_msg=''
@@ -110,15 +105,15 @@ def loadDB():
     users = coderush_users.find()
     return users
 
-def pushDB(user):
-    coderush_users.insert_one(user)
-    
-
-def findUSER(user_id):
-    try:
-        return coderush_users.find({"subscriber_id":user_id}).count()
-    except:
-        return 0
+def pushDB(users):
+    for user in users:
+        coderush_users.insert_one({
+            "subscriber_id": user['subscriber_id'],
+            "contact": user['contact'],
+            "year": user['year'],
+            "rollno": user['rollno'],
+            "name": user['name']
+        })
 
 
 @app.route('/', methods=['GET'])
@@ -140,6 +135,7 @@ def webook():
     data = request.get_json()
     log(data)
 
+    USERS = loadDB()
     
     if data["object"] == "page":
 
@@ -149,16 +145,41 @@ def webook():
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
-                    
+                    message_text = ''
                     try:    
                         message_text = messaging_event["message"]["text"]  # the message's text
                     except:
                         print "Message Text absent"
 
-                        if message_text.startswith('/register'):
-                            send_message(sender_id,REG_HERE%sender_id)
-                            return "ok",200
+                    if(message_text[0] == '@' or len(message_text) == 0):
+                        return "ok", 200
+                    # send_message(sender_id, message_text)
+            
+                if messaging_event.get("delivery"):  # delivery confirmation
+                    pass
 
+                if messaging_event.get("optin"):  # optin confirmation
+                    pass
+
+                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
+                    pass
+                try:
+                    message_text = messaging_event["message"]["text"]
+                except:
+                    return "ok",200
+
+                if message_text.startswith('/register'):
+                    send_message(sender_id,REG_HERE%sender_id)
+                    return "ok",200
+                
+                elif message_text.startswith('/coderush'):
+                    if USERS.has_key(sender_id):
+                        send_message(sender_id,GEN_INFO)
+                    else:
+                        send_message(sender_id,NOT_REGISTERED)
+                        
+                        
+                        
     return "ok", 200
 
 
